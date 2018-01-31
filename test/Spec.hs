@@ -7,55 +7,55 @@ import BinarySearchTree
 main :: IO ()
 main = hspec spec
 
-leaf   :: a -> BSTree a
-leaf x = Node x Nil Nil
+mkLeaf   :: a -> BSTree a
+mkLeaf x = Node x Nil Nil
 
-left       :: a -> BSTree a -> BSTree a
-left x left = Node x left Nil
+mkLeft       :: a -> BSTree a -> BSTree a
+mkLeft x mkLeft = Node x mkLeft Nil
 
 -- valid trees
-intTreeA = Node 7 (leaf 5) (leaf 8) :: BSTree Int
-intTreeB = Node 20 (leaf 15) (leaf 157) :: BSTree Int
-intTreeC = Node 10 intTreeA Nil :: BSTree Int
-intTreeD = Node 10 Nil intTreeB :: BSTree Int
-intTreeE = Node 10 intTreeA intTreeB :: BSTree Int
+intTreeA = Node 7 (mkLeaf 5) (mkLeaf 8)       :: BSTree Int
+intTreeB = Node 20 (mkLeaf 15) (mkLeaf 157)   :: BSTree Int
+intTreeC = Node 10 intTreeA Nil               :: BSTree Int
+intTreeD = Node 10 Nil intTreeB               :: BSTree Int
+intTreeE = Node 10 intTreeA intTreeB          :: BSTree Int
 -- invalid trees
-intTreeF = Node 2 (leaf 7) Nil :: BSTree Int
-intTreeG = Node 2 Nil (leaf (-7)) :: BSTree Int
-intTreeH = Node 10 intTreeB intTreeA :: BSTree Int
-intTreeI = Node 15 intTreeH intTreeH :: BSTree Int
+intTreeF = Node 2 (mkLeaf 7) Nil              :: BSTree Int
+intTreeG = Node 2 Nil (mkLeaf (-7))           :: BSTree Int
+intTreeH = Node 10 intTreeB intTreeA          :: BSTree Int
+intTreeI = Node 15 intTreeH intTreeH          :: BSTree Int
 -- worst-case valid tree
-intTreeJ = left 7 (left 5 (left 2 (leaf (-7))))
+intTreeJ = mkLeft 7 (mkLeft 5 (mkLeft 2 (mkLeaf (-7))))
 -- after-insert trees
-intTreeAi10 = Node 7 (leaf 5) (Node 8 Nil (leaf 10))
-intTreeAi0 = Node 7 (Node 5 (leaf 0) Nil) (leaf 8)
-intTreeCi45 = Node 10 intTreeA (leaf 45)
-intTreeDi8 = Node 10 (leaf 8) intTreeB
+intTreeAi10 = Node 7 (mkLeaf 5) (Node 8 Nil (mkLeaf 10))
+intTreeAi0 = Node 7 (Node 5 (mkLeaf 0) Nil) (mkLeaf 8)
+intTreeCi45 = Node 10 intTreeA (mkLeaf 45)
+intTreeDi8 = Node 10 (mkLeaf 8) intTreeB
 intTreeEi0 = Node 10 intTreeAi0 intTreeB
-intTreeFi7 = Node 2 (leaf 7) (leaf 7)
-intTreeHi17 = Node 10 intTreeB (Node 7 (leaf 5) (Node 8 Nil (leaf 17)))
+intTreeFi7 = Node 2 (mkLeaf 7) (mkLeaf 7)
+intTreeHi17 = Node 10 intTreeB (Node 7 (mkLeaf 5) (Node 8 Nil (mkLeaf 17)))
 intTreeIi17 = Node 15 intTreeH intTreeHi17
-intTreeJi3 = left 7 (left 5 (Node 2 (leaf (-7)) (leaf 3)))
+intTreeJi3 = mkLeft 7 (mkLeft 5 (Node 2 (mkLeaf (-7)) (mkLeaf 3)))
 -- after-delete trees
-intTreeAd5 = Node 7 Nil (leaf 8)
-intTreeAd7 = Node 8 (leaf 5) Nil
+intTreeAd5 = Node 7 Nil (mkLeaf 8)
+intTreeAd7 = Node 8 (mkLeaf 5) Nil
 intTreeCd10 = intTreeA
 intTreeCd7 = Node 10 intTreeAd7 Nil
 intTreeDd10 = intTreeB
 intTreeEd7 = Node 10 intTreeAd7 intTreeB
-intTreeFd2 = leaf 7
+intTreeFd2 = mkLeaf 7
 intTreeFd7 = intTreeF
-intTreeHd10 = Node 5 intTreeB (Node 7 Nil (leaf 8))
+intTreeHd10 = Node 5 intTreeB (Node 7 Nil (mkLeaf 8))
 intTreeId10 = Node 15 intTreeHd10 intTreeH
-intTreeJd5 = left 7 (left 2 (leaf (-7)))
+intTreeJd5 = mkLeft 7 (mkLeft 2 (mkLeaf (-7)))
 
 spec :: Spec
 spec = do
   describe "isValid" $ do
     it "identifies correct trivial trees" $ do
       isValid (Nil :: BSTree Double) `shouldBe` True
-      isValid (leaf 3) `shouldBe` True
-      isValid (leaf "Hello") `shouldBe` True
+      isValid (mkLeaf 3) `shouldBe` True
+      isValid (mkLeaf "Hello") `shouldBe` True
     it "identifies correct complex trees" $ do
       isValid intTreeA `shouldBe` True
       isValid intTreeB `shouldBe` True
@@ -69,8 +69,8 @@ spec = do
 
   describe "isLeaf" $ do
     it "identifies leaf (sub)trees" $ do
-      isLeaf (leaf 3) `shouldBe` True
-      isLeaf (leaf "Hello") `shouldBe` True
+      isLeaf (mkLeaf 3) `shouldBe` True
+      isLeaf (mkLeaf "Hello") `shouldBe` True
     it "identifies non-leaf (sub)trees" $ do
       isLeaf (Nil :: BSTree Double) `shouldBe` False
       isLeaf intTreeC `shouldBe` False
@@ -78,10 +78,10 @@ spec = do
       isLeaf intTreeE `shouldBe` False
 
   describe "size" $ do
-    it "computes size of trivial tree (empty and leaf)" $ do
+    it "computes size of trivial tree (empty and mkLeaf)" $ do
       size (Nil :: BSTree Double) `shouldBe` 0
-      size (leaf 3) `shouldBe` 1
-      size (leaf "Hello") `shouldBe` 1
+      size (mkLeaf 3) `shouldBe` 1
+      size (mkLeaf "Hello") `shouldBe` 1
     it "computes size of non-trivial tree" $ do
       size intTreeA `shouldBe` 3
       size intTreeC `shouldBe` 4
@@ -90,10 +90,10 @@ spec = do
       size intTreeJ `shouldBe` 4
 
   describe "height" $ do
-    it "computes height of trivial tree (empty and leaf)" $ do
+    it "computes height of trivial tree (empty and mkLeaf)" $ do
       height (Nil :: BSTree Double) `shouldBe` 0
-      height (leaf 3) `shouldBe` 1
-      height (leaf "Hello") `shouldBe` 1
+      height (mkLeaf 3) `shouldBe` 1
+      height (mkLeaf "Hello") `shouldBe` 1
     it "computes height of non-trivial tree" $ do
       height intTreeA `shouldBe` 2
       height intTreeC `shouldBe` 3
@@ -102,13 +102,13 @@ spec = do
       height intTreeJ `shouldBe` 4
 
   describe "minHeight" $ do
-    it "computes minimal height in trivial tree (empty and leaf)" $ do
+    it "computes minimal height in trivial tree (empty and mkLeaf)" $ do
       minHeight Nil `shouldBe` 0
-      minHeight (leaf 3) `shouldBe` 1
-      minHeight (leaf "Hello") `shouldBe` 1
+      minHeight (mkLeaf 3) `shouldBe` 1
+      minHeight (mkLeaf "Hello") `shouldBe` 1
     it "computes minimal height in non-trivial tree" $ do
       minHeight intTreeA `shouldBe` 2
-      minHeight intTreeC `shouldBe` 2
+      minHeight intTreeC `shouldBe` 1
       minHeight intTreeE `shouldBe` 3
       minHeight intTreeG `shouldBe` 1
       minHeight intTreeJ `shouldBe` 1
@@ -116,11 +116,11 @@ spec = do
   describe "contains" $ do
     it "checks if element is in trivial tree (mixed)" $ do
       ((Nil :: BSTree Double) `contains` 7) `shouldBe` False
-      contains (leaf 3) 3 `shouldBe` True
-      contains (leaf 3) (-3) `shouldBe` False
-      contains (leaf "Hello") "Hello" `shouldBe` True
-      contains (leaf "Hello") "hello" `shouldBe` False
-      contains (leaf "Hello") "Hell" `shouldBe` False
+      contains (mkLeaf 3) 3 `shouldBe` True
+      contains (mkLeaf 3) (-3) `shouldBe` False
+      contains (mkLeaf "Hello") "Hello" `shouldBe` True
+      contains (mkLeaf "Hello") "hello" `shouldBe` False
+      contains (mkLeaf "Hello") "Hell" `shouldBe` False
     it "checks if element is in non-trivial tree (positive)" $ do
       (intTreeA `contains` 5) `shouldBe` True
       (intTreeA `contains` 7) `shouldBe` True
@@ -136,7 +136,7 @@ spec = do
       (intTreeC `contains` 6) `shouldBe` False
       (intTreeD `contains` (-5)) `shouldBe` False
       (intTreeE `contains` 12) `shouldBe` False
-      (intTreeJ `contains` 0) `shouldBe` True
+      (intTreeJ `contains` 0) `shouldBe` False
     it "checks if element is in invalid tree (mixed, BS strategy)" $ do
       (intTreeF `contains` 2) `shouldBe` True
       (intTreeF `contains` 7) `shouldBe` False
@@ -149,10 +149,10 @@ spec = do
 
   describe "insert" $ do
     it "inserts element to trivial tree" $ do
-      (Nil `insert` 7) `shouldBe` leaf 7
+      (Nil `insert` 7) `shouldBe` mkLeaf 7
       (Nil `insert` "Hello") `shouldBe` Node "Hello" Nil Nil
     it "does not change tree if already contains element" $ do
-      insert (leaf 7) 7 `shouldBe` leaf 7
+      insert (mkLeaf 7) 7 `shouldBe` mkLeaf 7
       (intTreeA `insert` 7) `shouldBe` intTreeA
       (intTreeA `insert` 5) `shouldBe` intTreeA
       (intTreeA `insert` 8) `shouldBe` intTreeA
@@ -172,8 +172,8 @@ spec = do
 
   describe "delete" $ do
     it "deletes element from trivial tree" $ do
-      (leaf 7 `delete` 7) `shouldBe` Nil
-      (leaf "Hello" `delete` "Hello") `shouldBe` Nil
+      (mkLeaf 7 `delete` 7) `shouldBe` Nil
+      (mkLeaf "Hello" `delete` "Hello") `shouldBe` Nil
     it "does not change tree if element in not there" $ do
       (intTreeA `delete` 15) `shouldBe` intTreeA
       (intTreeA `delete` 6) `shouldBe` intTreeA
@@ -189,16 +189,16 @@ spec = do
       (intTreeE `delete` 7) `shouldBe` intTreeEd7
       (intTreeJ `delete` 5) `shouldBe` intTreeJd5
     it "deletes element from invalid tree" $ do
-      (intTreeF `insert` 2) `shouldBe` intTreeFd2
-      (intTreeF `insert` 7) `shouldBe` intTreeFd7
-      (intTreeH `insert` 10) `shouldBe` intTreeHd10
-      (intTreeI `insert` 10) `shouldBe` intTreeId10
+      (intTreeF `delete` 2) `shouldBe` intTreeFd2
+      (intTreeF `delete` 7) `shouldBe` intTreeFd7
+      (intTreeH `delete` 10) `shouldBe` intTreeHd10
+      (intTreeI `delete` 10) `shouldBe` intTreeId10
 
   describe "toList" $ do
     it "converts trivial tree to list" $ do
       toList (Nil :: BSTree Double) `shouldBe` ([] :: [Double])
-      toList (leaf 5) `shouldBe` [5]
-      toList (leaf "Hello") `shouldBe` ["Hello"]
+      toList (mkLeaf 5) `shouldBe` [5]
+      toList (mkLeaf "Hello") `shouldBe` ["Hello"]
     it "converts non-trivial tree to list (sorted)" $ do
       toList intTreeA `shouldBe` [5, 7, 8]
       toList intTreeB `shouldBe` [15, 20, 157]
@@ -214,8 +214,8 @@ spec = do
   describe "fromList" $ do
     it "converts list to trivial tree" $ do
       fromList ([] :: [Double]) `shouldBe` (Nil :: BSTree Double)
-      fromList [5] `shouldBe` leaf 5
-      fromList ["Hello"] `shouldBe` leaf "Hello"
+      fromList [5] `shouldBe` mkLeaf 5
+      fromList ["Hello"] `shouldBe` mkLeaf "Hello"
     it "converts list to balanced tree (trivial)" $ do
       fromList [5, 7, 8] `shouldBe` intTreeA
       fromList [7, 8, 5] `shouldBe` intTreeA
@@ -224,11 +224,11 @@ spec = do
       fromList [8, 5, 7] `shouldBe` intTreeA
       fromList [5, 8, 7] `shouldBe` intTreeA
     it "does not create three with duplicities" $ do
-      fromList [5, 5, 8] `shouldBe` Node 5 Nil (leaf 8)
-      fromList [5, 4, 5] `shouldBe` Node 5 (leaf 4) Nil
+      fromList [5, 5, 8] `shouldBe` Node 5 Nil (mkLeaf 8)
+      fromList [5, 4, 5] `shouldBe` Node 4 Nil (mkLeaf 5)
     it "converts list to balanced tree (complex, odd)" $ do
-      fromList [9, 0, 11, 15, 6] `shouldBe` Node 9 (Node 0 Nil (leaf 6)) (Node 11 Nil (leaf 15))
-      fromList [2, 1, 4, 5, 3, 9, 15, 6, 7] `shouldBe` Node 5 (Node 2 (leaf 1) (Node 3 Nil (leaf 4))) (Node 7 (leaf 6) (Node 9 Nil (leaf 15)))
+      fromList [9, 0, 11, 15, 6] `shouldBe` Node 9 (Node 0 Nil (mkLeaf 6)) (Node 11 Nil (mkLeaf 15))
+      fromList [2, 1, 4, 5, 3, 9, 15, 6, 7] `shouldBe` Node 5 (Node 2 (mkLeaf 1) (Node 3 Nil (mkLeaf 4))) (Node 7 (mkLeaf 6) (Node 9 Nil (mkLeaf 15)))
     it "converts list to balanced tree (complex, even)" $ do
-      fromList [9, 0, 11, 15, 6, 8] `shouldBe` Node 8 (Node 0 Nil (leaf 6)) (Node 11 (leaf 9) (leaf 15))
-      fromList [2, 1, 4, 5, 3, 9, 15, 6] `shouldBe` Node 4 (Node 2 (leaf 1) (leaf 3)) (Node 6 (leaf 5) (Node 9 Nil (leaf 15)))
+      fromList [9, 0, 11, 15, 6, 8] `shouldBe` Node 8 (Node 0 Nil (mkLeaf 6)) (Node 11 (mkLeaf 9) (mkLeaf 15))
+      fromList [2, 1, 4, 5, 3, 9, 15, 6] `shouldBe` Node 4 (Node 2 (mkLeaf 1) (mkLeaf 3)) (Node 6 (mkLeaf 5) (Node 9 Nil (mkLeaf 15)))
