@@ -1,11 +1,29 @@
 module BinarySearchTree where
 
+import qualified Data.List
+-- You might want to use some externals. Better use qualified import
+-- so there won't be any clash
+-- for example instead of "sort" (from Data.List) use "Data.List.sort"
+
+-- !! DO NOT CHANGE BSTree data type and type signatures of functions
+
 -- | Binary search tree as described at wikipedia:
 --  https://en.wikipedia.org/wiki/Binary_search_tree
-data BSTree a = Node   a (BSTree a) (BSTree a)
-              | Nil -- Nil is black
+data BSTree a = Node a (BSTree a) (BSTree a)
+              | Nil
               deriving (Show, Read, Eq)
 
+value :: BSTree a -> a
+value Nil = error "Nil does not have a value"
+value (Node x _ _) = x
+
+left :: BSTree a -> BSTree a
+left Nil = Nil
+left (Node _ l _) = l
+
+right :: BSTree a -> BSTree a
+right Nil = Nil
+right (Node _ _ r) = r
 
 -- | Check whether is @BSTree@ valid (i.e., does not violate any rule)
 -- TODO: implement validity check
