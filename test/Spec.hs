@@ -24,6 +24,7 @@ intTreeF = Node 2 (mkLeaf 7) Nil              :: BSTree Int
 intTreeG = Node 2 Nil (mkLeaf (-7))           :: BSTree Int
 intTreeH = Node 10 intTreeB intTreeA          :: BSTree Int
 intTreeI = Node 15 intTreeH intTreeH          :: BSTree Int
+intTreeK = Node 5 (Node 2 Nil (mkLeaf 200)) (Node 10 (mkLeaf 0) Nil) :: BSTree Int
 -- worst-case valid tree
 intTreeJ = mkLeft 7 (mkLeft 5 (mkLeft 2 (mkLeaf (-7))))
 -- after-insert trees
@@ -66,6 +67,7 @@ spec = do
       isValid intTreeF `shouldBe` False
       isValid intTreeG `shouldBe` False
       isValid intTreeH `shouldBe` False
+      isValid intTreeK `shouldBe` False
 
   describe "isLeaf" $ do
     it "identifies leaf (sub)trees" $ do
