@@ -11,7 +11,7 @@ mkLeaf   :: a -> BSTree a
 mkLeaf x = Node x Nil Nil
 
 mkLeft       :: a -> BSTree a -> BSTree a
-mkLeft x mkLeft = Node x mkLeft Nil
+mkLeft x subLeft = Node x subLeft Nil
 
 -- valid trees
 intTreeA = Node 7 (mkLeaf 5) (mkLeaf 8)       :: BSTree Int
@@ -27,6 +27,7 @@ intTreeI = Node 15 intTreeH intTreeH          :: BSTree Int
 intTreeK = Node 5 (Node 2 Nil (mkLeaf 200)) (Node 10 (mkLeaf 0) Nil) :: BSTree Int
 -- worst-case valid tree
 intTreeJ = mkLeft 7 (mkLeft 5 (mkLeft 2 (mkLeaf (-7))))
+intTreeL = Node 10 (mkLeaf 5) (Node 20 (Node 12 (mkLeaf 11) (mkLeaf 15)) (mkLeaf 25))
 -- after-insert trees
 intTreeAi10 = Node 7 (mkLeaf 5) (Node 8 Nil (mkLeaf 10))
 intTreeAi0 = Node 7 (Node 5 (mkLeaf 0) Nil) (mkLeaf 8)
@@ -49,6 +50,7 @@ intTreeFd7 = intTreeF
 intTreeHd10 = Node 5 intTreeB (Node 7 Nil (mkLeaf 8))
 intTreeId10 = Node 15 intTreeHd10 intTreeH
 intTreeJd5 = mkLeft 7 (mkLeft 2 (mkLeaf (-7)))
+intTreeLd10 = Node 11 (mkLeaf 5) (Node 20 (Node 12 Nil (mkLeaf 15)) (mkLeaf 25))
 
 spec :: Spec
 spec = do
@@ -57,6 +59,11 @@ spec = do
       isValid (Nil :: BSTree Double) `shouldBe` True
       isValid (mkLeaf 3) `shouldBe` True
       isValid (mkLeaf "Hello") `shouldBe` True
+      isValid (Node 5 Nil Nil) `shouldBe` True
+      isValid (Node 5 (mkLeaf 3) Nil) `shouldBe` True
+      isValid (Node 5 Nil (mkLeaf 7)) `shouldBe` True
+      isValid (Node 5 (mkLeaf 5) Nil) `shouldBe` False
+      isValid (Node 5 Nil (mkLeaf 5)) `shouldBe` False
     it "identifies correct complex trees" $ do
       isValid intTreeA `shouldBe` True
       isValid intTreeB `shouldBe` True
@@ -190,6 +197,7 @@ spec = do
       (intTreeD `delete` 10) `shouldBe` intTreeDd10
       (intTreeE `delete` 7) `shouldBe` intTreeEd7
       (intTreeJ `delete` 5) `shouldBe` intTreeJd5
+      (intTreeL `delete` 10) `shouldBe` intTreeLd10
     it "deletes element from invalid tree" $ do
       (intTreeF `delete` 2) `shouldBe` intTreeFd2
       (intTreeF `delete` 7) `shouldBe` intTreeFd7
@@ -225,7 +233,7 @@ spec = do
       fromList [8, 7, 5] `shouldBe` intTreeA
       fromList [8, 5, 7] `shouldBe` intTreeA
       fromList [5, 8, 7] `shouldBe` intTreeA
-    it "does not create three with duplicities" $ do
+    it "does not create tree with duplicates" $ do
       fromList [5, 5, 8] `shouldBe` Node 5 Nil (mkLeaf 8)
       fromList [5, 4, 5] `shouldBe` Node 4 Nil (mkLeaf 5)
     it "converts list to balanced tree (complex, odd)" $ do

@@ -74,5 +74,3 @@ toList _ = undefined
 -- TODO: implement conversion from list to tree, use median (hint: sort)
 fromList :: Ord a => [a] -> BSTree a
 fromList _ = undefined
-
-

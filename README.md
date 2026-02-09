@@ -13,8 +13,8 @@ Open `src/BinarySearchTree.hs` and implement all the TODOs there. You can also c
 5. `minHeight` should return minimal height of given tree.
 6. `contains` should return `True` if given element if present in given tree (binary search), otherwise `False`.
 7. `insert` should return new tree created by inserting given element to given tree. Insertion must follow rules of binary search tree (preserves validity). If element is already in tree, resulting tree is the same as given.
-8. `delete` should return new tree created by deleting given element from given tree. If node with to-be-deleted element has both subtrees, it should be replaced by minimal value of right subtree (see [here](https://www.geeksforgeeks.org/binary-search-tree-set-2-delete/)). If element is not in three, resulting tree is the same as given.
-9. `toList` should return a list with elements of given tree (prefix order). If tree is valid, then the list will be sorted in ascending order.
+8. `delete` should return new tree created by deleting given element from given tree. If node with to-be-deleted element has both subtrees, it should be replaced by minimal value of right subtree (see [here](https://www.geeksforgeeks.org/binary-search-tree-set-2-delete/)). If element is not in tree, resulting tree is the same as given.
+9. `toList` should return a list with elements of given tree using in-order traversal (left, root, right). If tree is valid, then the list will be sorted in ascending order.
 10. `fromList` should return a tree with elements from given list. Tree can not contain duplicates but list can. Tree should be balanced - use median strategy (if length of list is even, then left median). 
 
 Hints: 
